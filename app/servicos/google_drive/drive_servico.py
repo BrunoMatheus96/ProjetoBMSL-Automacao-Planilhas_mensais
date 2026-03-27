@@ -20,7 +20,7 @@ class GoogleDriveServico:
     def listar_arquivos(self):
         results = (
             self.service.files()
-            .list(pageSize=10, fields="files(id, name, mimeType)")
+            .list(pageSize=10, fields="files(id, name, createdTime, mimeType)")
             .execute()
         )
 
