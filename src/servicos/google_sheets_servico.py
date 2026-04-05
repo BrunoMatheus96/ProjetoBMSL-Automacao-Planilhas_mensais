@@ -4,46 +4,64 @@ import gspread
 import pandas as pd
 from google.oauth2.service_account import Credentials
 
+
 class GoogleSheetsServico:
 
     def __init__(self):
-        scope = [
-            "https://www.googleapis.com/auth/spreadsheets",
-            "https://www.googleapis.com/auth/drive"
-        ]
+        try:
+            scope = [
+                "https://www.googleapis.com/auth/spreadsheets",
+                "https://www.googleapis.com/auth/drive",
+            ]
 
-        creds = Credentials.from_service_account_file(
-            os.getenv("GOOGLE_CREDENCIAIS"),
-            scopes=scope
-        )
+            creds = Credentials.from_service_account_file(
+                os.getenv("GOOGLE_CREDENCIAIS"), scopes=scope
+            )
 
-        self.client = gspread.authorize(creds)
+            self.client = gspread.authorize(creds)
+        except Exception as e:
+            print(f"Erro no __init__ em google_sheets_servico.py: {e}")
 
     def ler_aba(self, spreadsheet_id, aba_nome):
-        sheet = self.client.open_by_key(spreadsheet_id)
-        worksheet = sheet.worksheet(aba_nome)
+        try:
+            sheet = self.client.open_by_key(spreadsheet_id)
+            worksheet = sheet.worksheet(aba_nome)
 
-        dados = worksheet.get_all_records()
-        return pd.DataFrame(dados)
+            dados = worksheet.get_all_records()
+            return pd.DataFrame(dados)
+        except Exception as e:
+            print(f"Erro no ler_aba em google_sheets_servico.py: {e}")
 
     def adicionar_linha(self, spreadsheet_id, aba_nome, linha):
-        sheet = self.client.open_by_key(spreadsheet_id)
-        worksheet = sheet.worksheet(aba_nome)
+        try:
+            sheet = self.client.open_by_key(spreadsheet_id)
+            worksheet = sheet.worksheet(aba_nome)
 
-        worksheet.append_row(linha)
+            worksheet.append_row(linha)
+        except Exception as e:
+            print(f"Erro no adicionar_linha em google_sheets_servico.py: {e}")
 
     def deletar_linha(self, spreadsheet_id, aba_nome, valor, coluna=1):
-        sheet = self.client.open_by_key(spreadsheet_id)
-        worksheet = sheet.worksheet(aba_nome)
+        try:
+            sheet = self.client.open_by_key(spreadsheet_id)
+            worksheet = sheet.worksheet(aba_nome)
 
-        cell = worksheet.find(valor)
-        worksheet.delete_rows(cell.row)
+            cell = worksheet.find(valor)
+            worksheet.delete_rows(cell.row)
+        except Exception as e:
+            print(f"Erro no deletar_linha em google_sheets_servico.py: {e}")
 
     def criar_aba(self, spreadsheet_id, nome_aba):
-        sheet = self.client.open_by_key(spreadsheet_id)
-        sheet.add_worksheet(title=nome_aba, rows="100", cols="20")
+        try:
+            sheet = self.client.open_by_key(spreadsheet_id)
+            sheet.add_worksheet(title=nome_aba, rows="100", cols="20")
+        except Exception as e:
+            print(f"Erro no criar_aba em google_sheets_servico.py: {e}")
 
     def deletar_aba(self, spreadsheet_id, nome_aba):
-        sheet = self.client.open_by_key(spreadsheet_id)
-        worksheet = sheet.worksheet(nome_aba)
-        sheet.del_worksheet(worksheet)
+        try:
+            sheet = self.client.open_by_key(spreadsheet_id)
+            worksheet = sheet.worksheet(nome_aba)
+            sheet.del_worksheet(worksheet)
+        except Exception as e:
+            print(f"Erro no deletar_aba em google_sheets_servico.py: {e}")
